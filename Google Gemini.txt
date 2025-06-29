@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Game IQ Test</title>
+    <!-- Embedded styles for offline play -->
+    <style>
+        /*
+         * This CSS block contains styles derived from Tailwind CSS v3.4.3
+         * and custom rules specific to this game. It is embedded to allow
+         * the game to function entirely offline without external network requests.
+         */
+
+        /* No @import url() for fonts to ensure full offline capability.
+           The 'Inter' font is preferred, but the browser will fall back
+           to a generic sans-serif if 'Inter' is not installed locally. */
+
+        /* Base styles */
+        body {
+            font-family: 'Inter', sans-serif; /* Falls back to generic sans-serif if Inter is not installed locally */
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Utility classes (simplified for demonstration, full Tailwind output is much larger) */
+        .hidden { display: none !important; }
+        .w-full { width: 100%; }
+        .text-center { text-align: center; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .grid { display: grid; }
+        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .gap-4 { gap: 1rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-8 { margin-top: 2rem; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+        .text-md { font-size: 1rem; line-height: 1.5rem; }
+        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
+        .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+        .font-bold { font-weight: 700; }
+        .font-extrabold { font-weight: 800; }
+        .font-normal { font-weight: 400; }
+        .opacity-90 { opacity: 0.9; }
+        .text-gray-800 { color: #1f2937; }
+        .text-gray-700 { color: #374151; }
+        .text-gray-600 { color: #4b5563; }
+        .text-gray-500 { color: #6b7280; }
+        .text-green-600 { color: #22c55e; }
+        .text-red-600 { color: #dc2626; }
+        .text-purple-600 { color: #9333ea; }
+        .text-blue-600 { color: #2563eb; }
+        .text-indigo-600 { color: #4f46e5; }
+
+        /* Custom styles from previous version, adapted for direct embedding */
+        .game-container {
+            max-width: 700px;
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .question-text {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 1.5rem;
+        }
+
+        .answer-button, .game-select-button {
+            background-color: #6366f1;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: block;
+            width: 100%;
+            border: none;
+        }
+
+        .answer-button:hover, .game-select-button:hover {
+            background-color: #4f46e5;
+            transform: translateY(-2px);
+        }
+
+        .answer-button:active, .game-select-button:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .game-select-button {
+            background-color: #3b82f6;
+            margin-bottom: 0.75rem;
+        }
+
+        .game-select-button:hover {
+            background-color: #2563eb;
+        }
+
+        .score-display, .timer-display {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-top: 1rem;
+        }
+        .timer-display {
+            color: #ef4444;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .start-button, .restart-button, .next-level-button, .back-to-games-button {
+            background-color: #22c55e;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            display: inline-block;
+            border: none;
+        }
+
+        .start-button:hover, .restart-button:hover, .next-level-button:hover, .back-to-games-button:hover {
+            background-color: #16a34a;
+            transform: translateY(-2px);
+        }
+
+        .start-button:active, .restart-button:active, .next-level-button:active, .back-to-games-button:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 1.5rem;
+                border-radius: 1rem;
+                gap: 1rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.6rem;
+            }
+            .question-text {
+                font-size: 1.4rem;
+            }
+            .answer-button, .game-select-button {
+                padding: 0.8rem 1rem;
+                font-size: 1rem;
+            }
+            .score-display, .timer-display {
+                font-size: 1.2rem;
+            }
+            .timer-display {
+                font-size: 1.5rem;
+            }
+            .start-button, .restart-button, .next-level-button, .back-to-games-button {
+                padding: 0.8rem 1.5rem;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer" class="game-container flex flex-col items-center justify-center">
+        <h1 class="text-4xl font-bold text-gray-800 mb-6">IQ Test Hub</h1>
+
+        <!-- Game Selection Screen -->
+        <div id="gameSelectionScreen" class="w-full">
+            <p class="text-lg text-gray-600 mb-6">Choose a game to test your skills:</p>
+            <div id="gameList" class="grid grid-cols-1 gap-4">
+                <!-- Game selection buttons will be injected here -->
+            </div>
+        </div>
+
+        <!-- Game Play Screen -->
+        <div id="gamePlayScreen" class="hidden w-full">
+            <h2 id="gameTitle" class="text-2xl font-bold text-gray-700 mb-4"></h2>
+            <p id="levelInfo" class="text-md text-gray-500 mb-2"></p>
+            <div id="timerDisplay" class="timer-display mb-4">Time Left: <span id="timeLeft">60</span>s</div>
+            <p id="questionText" class="question-text"></p>
+            <div id="answerOptions" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                <!-- Answer buttons will be inserted here by JavaScript -->
+            </div>
+            <div id="currentScoreDisplay" class="score-display mt-8">Score: <span id="currentLevelScore">0</span></div>
+        </div>
+
+        <!-- Level Complete Screen -->
+        <div id="levelCompleteScreen" class="hidden text-center">
+            <h2 class="text-3xl font-bold text-green-600 mb-4">Level Complete!</h2>
+            <p class="text-xl text-gray-600 mb-8">Score for this level: <span id="levelScoreEarned" class="font-extrabold text-indigo-600"></span></p>
+            <button id="nextLevelButton" class="next-level-button">Next Level</button>
+        </div>
+
+        <!-- Game Over Screen (Time Up) -->
+        <div id="gameOverScreen" class="hidden text-center">
+            <h2 class="text-3xl font-bold text-red-600 mb-4">Time's Up!</h2>
+            <p class="text-xl text-gray-600 mb-8">You ran out of time on this level.</p>
+            <button id="restartGameFromGameOver" class="restart-button">Restart Game</button>
+            <button id="backToGamesFromGameOver" class="back-to-games-button mt-4">Back to Games</button>
+        </div>
+
+        <!-- Game Complete Screen -->
+        <div id="gameCompleteScreen" class="hidden text-center">
+            <h2 class="text-3xl font-bold text-purple-600 mb-4">Game Complete!</h2>
+            <p class="text-xl text-gray-600 mb-8">Your final score for <span id="finishedGameName" class="font-extrabold text-blue-600"></span>: <span id="finalGameScore" class="font-extrabold text-indigo-600"></span></p>
+            <button id="playAgainButton" class="start-button">Play Again This Game</button>
+            <button id="backToGamesFromGameComplete" class="back-to-games-button mt-4">Back to All Games</button>
+        </div>
+
+        <!-- Final Results Screen (All Games Complete) -->
+        <div id="finalResultsScreen" class="hidden text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">All Games Completed!</h2>
+            <p class="text-xl text-gray-600 mb-6">Here are your total scores:</p>
+            <div id="allScoresList" class="text-lg text-gray-700 mb-8">
+                <!-- Individual game scores will be listed here -->
+            </div>
+            <button id="playAllAgainButton" class="start-button">Play All Games Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Data structure for multiple games and levels
+        const games = [
+            {
+                name: "Logic Puzzles",
+                description: "Test your deductive reasoning.",
+                levels: [
+                    { question: "If all 'Sprots' are 'Wibbles', and all 'Wibbles' are 'Gloopy', then all 'Sprots' are definitely:", options: ["Gloopy", "Not Wibbles", "Neither", "Both Wibbles and Gloopy"], correct: 0 },
+                    { question: "Mary is older than John. John is older than Lisa. Who is the youngest?", options: ["Mary", "John", "Lisa", "Cannot be determined"], correct: 2 },
+                    { question: "All birds can fly. A penguin is a bird. Can a penguin fly?", options: ["Yes", "No", "Sometimes", "Only if it tries hard"], correct: 1 },
+                    { question: "If the day before yesterday was Tuesday, what day is tomorrow?", options: ["Thursday", "Friday", "Saturday", "Wednesday"], correct: 1 },
+                    { question: "A is to B as C is to D. If A is 'happy' and B is 'sad', and C is 'day', then D is:", options: ["Night", "Sun", "Light", "Darkness"], correct: 0 },
+                    { question: "Which shape completes the sequence: Circle, Square, Circle, Square, _____?", options: ["Square", "Triangle", "Circle", "Rectangle"], correct: 2 }
+                ]
+            },
+            {
+                name: "Number Sequences",
+                description: "Identify patterns in numbers.",
+                levels: [
+                    { question: "Which number comes next in the sequence: 1, 4, 9, 16, ___?", options: ["20", "25", "30", "36"], correct: 1 },
+                    { question: "Complete the sequence: 2, 4, 6, 8, ___?", options: ["9", "10", "11", "12"], correct: 1 },
+                    { question: "What is the next number: 1, 1, 2, 3, 5, 8, ___?", options: ["11", "12", "13", "14"], correct: 2 },
+                    { question: "Find the next number: 3, 6, 12, 24, ___?", options: ["36", "40", "48", "50"], correct: 2 },
+                    { question: "Which number comes next: 10, 9, 7, 4, ___?", options: ["0", "1", "2", "3"], correct: 0 },
+                    { question: "What is the missing number: 20, 18, 15, 11, ___?", options: ["6", "7", "8", "9"], correct: 1 }
+                ]
+            },
+            {
+                name: "Word Analogies",
+                description: "Find relationships between words.",
+                levels: [
+                    { question: "Hot is to Cold as Up is to:", options: ["Side", "Down", "Warm", "High"], correct: 1 },
+                    { question: "Doctor is to Hospital as Teacher is to:", options: ["Student", "School", "Book", "Classroom"], correct: 1 },
+                    { question: "Finger is to Hand as Toe is to:", options: ["Foot", "Leg", "Nail", "Shoe"], correct: 0 },
+                    { question: "Light is to Dark as Wet is to:", options: ["Water", "Dry", "Rain", "Soggy"], correct: 1 },
+                    { question: "Pilot is to Airplane as Driver is to:", options: ["Road", "Car", "Wheel", "Passenger"], correct: 1 },
+                    { question: "Fire is to Ash as Event is to:", options: ["Preparation", "Memory", "Aftermath", "Celebration"], correct: 2 }
+                ]
+            },
+            {
+                name: "Spatial Reasoning",
+                description: "Challenge your visual and spatial skills.",
+                levels: [
+                    { question: "Which shape comes next in the pattern: Circle, Square, Triangle, Circle, Square, ___?", options: ["Square", "Triangle", "Circle", "Pentagon"], correct: 1 },
+                    { question: "If you unfold a paper folded once and cut a circle in the middle, how many holes will there be?", options: ["1", "2", "3", "4"], correct: 1 },
+                    { question: "Which direction are you facing if you turn 90 degrees clockwise from North?", options: ["East", "South", "West", "North-East"], correct: 0 },
+                    { question: "Imagine a cube. How many faces does it have?", options: ["4", "6", "8", "12"], correct: 1 },
+                    { question: "Which image is the odd one out among four images showing rotations of a single object? (Assume objects are displayed visually for user, here only text options are given)", options: ["Image A (rotated)", "Image B (rotated)", "Image C (rotated)", "Image D (different shape)"], correct: 3 }, // This question is more conceptual given text limitation
+                    { question: "If a clock shows 3:00, what is the angle between the hour and minute hands?", options: ["0 degrees", "30 degrees", "90 degrees", "180 degrees"], correct: 2 }
+                ]
+            },
+            {
+                name: "Memory Test",
+                description: "Test your short-term memory.",
+                levels: [
+                    { question: "Remember the colors: Red, Blue, Green. What was the second color?", options: ["Red", "Blue", "Green", "Yellow"], correct: 1 },
+                    { question: "Sequence: Apple, Orange, Banana. Which fruit was last?", options: ["Apple", "Orange", "Banana", "Grape"], correct: 2 },
+                    { question: "Numbers: 7, 3, 9, 1. What was the third number?", options: ["7", "3", "9", "1"], correct: 2 },
+                    { question: "Words: Cat, Dog, Bird, Fish. Which animal was second?", options: ["Cat", "Dog", "Bird", "Fish"], correct: 1 },
+                    { question: "Shapes: Star, Heart, Circle, Square. What was the first shape?", options: ["Star", "Heart", "Circle", "Square"], correct: 0 },
+                    { question: "List: One, Two, Three, Four, Five. What was the fourth item?", options: ["One", "Two", "Three", "Four"], correct: 3 }
+                ]
+            }
+        ];
+
+        // Game state variables
+        let currentSelectedGameIndex = -1; // -1 means no game selected
+        let currentLevelIndex = 0;
+        let scorePerGame = new Array(games.length).fill(0); // Stores total score for each game
+        let timeLeft = 60; // Initial time for each level
+        let timerInterval;
+
+        // DOM elements
+        const gameSelectionScreen = document.getElementById('gameSelectionScreen');
+        const gamePlayScreen = document.getElementById('gamePlayScreen');
+        const levelCompleteScreen = document.getElementById('levelCompleteScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const gameCompleteScreen = document.getElementById('gameCompleteScreen');
+        const finalResultsScreen = document.getElementById('finalResultsScreen');
+
+        const gameListElem = document.getElementById('gameList');
+        const gameTitleElem = document.getElementById('gameTitle');
+        const levelInfoElem = document.getElementById('levelInfo');
+        const timeLeftElem = document.getElementById('timeLeft');
+        const questionTextElem = document.getElementById('questionText');
+        const answerOptionsElem = document.getElementById('answerOptions');
+        const currentLevelScoreElem = document.getElementById('currentLevelScore');
+        const levelScoreEarnedElem = document.getElementById('levelScoreEarned');
+        const finishedGameNameElem = document.getElementById('finishedGameName');
+        const finalGameScoreElem = document.getElementById('finalGameScore');
+        const allScoresListElem = document.getElementById('allScoresList');
+
+        const nextLevelButton = document.getElementById('nextLevelButton');
+        const restartGameFromGameOverButton = document.getElementById('restartGameFromGameOver');
+        const backToGamesFromGameOverButton = document.getElementById('backToGamesFromGameOver');
+        const playAgainButton = document.getElementById('playAgainButton');
+        const backToGamesFromGameCompleteButton = document.getElementById('backToGamesFromGameComplete');
+        const playAllAgainButton = document.getElementById('playAllAgainButton');
+
+        /**
+         * Utility function to show a specific screen and hide others.
+         * @param {HTMLElement} screenToShow - The DOM element of the screen to display.
+         */
+        function showScreen(screenToShow) {
+            const screens = [gameSelectionScreen, gamePlayScreen, levelCompleteScreen, gameOverScreen, gameCompleteScreen, finalResultsScreen];
+            screens.forEach(screen => {
+                if (screen === screenToShow) {
+                    screen.classList.remove('hidden');
+                } else {
+                    screen.classList.add('hidden');
+                }
+            });
+        }
+
+        /**
+         * Renders the game selection screen with buttons for each game.
+         */
+        function renderGameSelection() {
+            showScreen(gameSelectionScreen);
+            gameListElem.innerHTML = '';
+            games.forEach((game, index) => {
+                const button = document.createElement('button');
+                button.textContent = game.name;
+                button.classList.add('game-select-button');
+                button.innerHTML = `
+                    <p class="font-bold text-lg">${game.name}</p>
+                    <p class="text-sm opacity-90">${game.description}</p>
+                `;
+                button.addEventListener('click', () => selectGame(index));
+                gameListElem.appendChild(button);
+            });
+        }
+
+        /**
+         * Selects a game, initializes its state, and starts the first level.
+         * @param {number} gameIndex - The index of the selected game.
+         */
+        function selectGame(gameIndex) {
+            currentSelectedGameIndex = gameIndex;
+            currentLevelIndex = 0;
+            // scorePerGame[currentSelectedGameIndex] is already initialized to 0
+            // if restarting a game, it will reset to 0 in startGame/restartGame functions
+            startGame();
+        }
+
+        /**
+         * Initializes and starts a specific game.
+         * Resets level, score for the current game, and displays the first question.
+         */
+        function startGame() {
+            scorePerGame[currentSelectedGameIndex] = 0; // Reset score for this specific game
+            currentLevelIndex = 0; // Start from level 0
+            currentLevelScoreElem.textContent = scorePerGame[currentSelectedGameIndex];
+            showScreen(gamePlayScreen); // Show game play screen
+            startLevel(); // Start the first level
+        }
+
+        /**
+         * Starts a new level: clears previous timer, resets time, and displays question.
+         */
+        function startLevel() {
+            clearInterval(timerInterval); // Clear any existing timer
+            timeLeft = 60; // Reset timer for the new level
+            timeLeftElem.textContent = timeLeft;
+            currentLevelScoreElem.textContent = scorePerGame[currentSelectedGameIndex]; // Update current game score display
+
+            const currentGame = games[currentSelectedGameIndex];
+            if (currentLevelIndex < currentGame.levels.length) {
+                const level = currentGame.levels[currentLevelIndex];
+                gameTitleElem.textContent = currentGame.name;
+                levelInfoElem.textContent = `Level ${currentLevelIndex + 1} of ${currentGame.levels.length}`;
+                questionTextElem.textContent = level.question;
+
+                answerOptionsElem.innerHTML = ''; // Clear old options
+                level.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.classList.add('answer-button');
+                    button.addEventListener('click', () => checkAnswer(index));
+                    answerOptionsElem.appendChild(button);
+                });
+
+                startTimer(); // Start timer for the new level
+            } else {
+                // All levels for this game completed
+                endCurrentGame();
+            }
+        }
+
+        /**
+         * Starts the countdown timer for the current level.
+         */
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timeLeftElem.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeUp();
+                }
+            }, 1000); // Update every second
+        }
+
+        /**
+         * Handles the event when the timer runs out.
+         */
+        function handleTimeUp() {
+            showScreen(gameOverScreen);
+        }
+
+        /**
+         * Checks the selected answer against the correct answer.
+         * Updates score and advances to the next level or ends the game.
+         * @param {number} selectedOptionIndex - The index of the selected option.
+         */
+        function checkAnswer(selectedOptionIndex) {
+            clearInterval(timerInterval); // Stop the timer when an answer is selected
+
+            const currentLevel = games[currentSelectedGameIndex].levels[currentLevelIndex];
+            if (selectedOptionIndex === currentLevel.correct) {
+                scorePerGame[currentSelectedGameIndex]++; // Increment score for the current game
+                levelScoreEarnedElem.textContent = "1 point!"; // Indicate correct answer
+            } else {
+                levelScoreEarnedElem.textContent = "0 points."; // Indicate incorrect answer
+            }
+
+            currentLevelIndex++; // Move to the next level
+            currentLevelScoreElem.textContent = scorePerGame[currentSelectedGameIndex]; // Update game score display
+
+            showScreen(levelCompleteScreen);
+        }
+
+        /**
+         * Ends the current game (when all its levels are complete).
+         * Displays the game complete screen with the score for that game.
+         */
+        function endCurrentGame() {
+            clearInterval(timerInterval); // Ensure timer is stopped
+            finishedGameNameElem.textContent = games[currentSelectedGameIndex].name;
+            finalGameScoreElem.textContent = `${scorePerGame[currentSelectedGameIndex]} / ${games[currentSelectedGameIndex].levels.length}`;
+            showScreen(gameCompleteScreen);
+        }
+
+        /**
+         * Displays the final results screen, showing scores for all games played.
+         */
+        function showFinalResults() {
+            showScreen(finalResultsScreen);
+            allScoresListElem.innerHTML = '';
+            let allGamesCompleted = true;
+            games.forEach((game, index) => {
+                const scoreItem = document.createElement('p');
+                const gameScore = scorePerGame[index];
+                const totalLevels = game.levels.length;
+                scoreItem.textContent = `${game.name}: ${gameScore} / ${totalLevels}`;
+                allScoresListElem.appendChild(scoreItem);
+
+                // Check if all levels for this game have been attempted (or completed)
+                // This is a simple check, could be more robust by tracking if a game was started
+                if (scorePerGame[index] === 0 && currentSelectedGameIndex !== index) {
+                    allGamesCompleted = false; // If score is 0 and it wasn't the last played game, assume not completed
+                }
+            });
+
+            // If not all games have been completed, encourage playing remaining games
+            if (!allGamesCompleted) {
+                const continueText = document.createElement('p');
+                continueText.classList.add('text-md', 'text-gray-500', 'mt-4');
+                continueText.textContent = "Go back and try the other games!";
+                allScoresListElem.appendChild(continueText);
+            }
+        }
+
+        /**
+         * Resets all game scores and returns to the game selection screen.
+         */
+        function resetAllGames() {
+            scorePerGame.fill(0);
+            currentSelectedGameIndex = -1;
+            currentLevelIndex = 0;
+            renderGameSelection();
+        }
+
+        // --- Event Listeners ---
+
+        // Level Complete Screen
+        nextLevelButton.addEventListener('click', () => {
+            if (currentLevelIndex < games[currentSelectedGameIndex].levels.length) {
+                startLevel(); // Go to the next level of the current game
+            } else {
+                endCurrentGame(); // All levels in current game completed
+            }
+        });
+
+        // Game Over Screen (Time Up)
+        restartGameFromGameOverButton.addEventListener('click', startGame); // Restart current game
+        backToGamesFromGameOverButton.addEventListener('click', renderGameSelection); // Go back to game selection
+
+        // Game Complete Screen
+        playAgainButton.addEventListener('click', startGame); // Play the same game again
+        backToGamesFromGameCompleteButton.addEventListener('click', renderGameSelection); // Go back to game selection
+
+        // Final Results Screen
+        playAllAgainButton.addEventListener('click', resetAllGames);
+
+        // Initial setup on window load
+        window.onload = () => {
+            console.log("IQ Test Hub: Script loaded and initializing...");
+            renderGameSelection(); // Start by showing game selection
+        };
+    </script>
+</body>
+</html>
